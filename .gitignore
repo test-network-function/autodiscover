@@ -11,5 +11,27 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
+bin/
+catalog.json
+claim.json
+.idea
+vendor
+*.test
+test-network-function_junit.xml
+cover.out
+cover.out.tmp
+cnf-certification-test/cnf-certification-tests_junit.xml
+cnf-certification-tests_junit.xml
+cnftests-junit.xml
+setup_junit.xml
+validation_junit.xml
+.vscode
+jsontest-cli
+test-out.json
+test-network-function
+
+temp/
+/tnf
+/all-releases.txt
+/latest-release-tag.txt
+/release-tag.txt
