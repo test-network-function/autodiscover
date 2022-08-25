@@ -16,7 +16,7 @@ COMMON_GO_ARGS=-race
 GIT_COMMIT=$(shell script/create-version-files.sh)
 GIT_RELEASE=$(shell script/get-git-release.sh)
 GIT_PREVIOUS_RELEASE=$(shell script/get-git-previous-release.sh)
-GOLANGCI_VERSION=v1.48.0
+GOLANGCI_VERSION=v1.49.0
 LINKER_TNF_RELEASE_FLAGS=-X github.com/test-network-function/autodiscover/autodiscover.GitCommit=${GIT_COMMIT}
 LINKER_TNF_RELEASE_FLAGS+= -X github.com/test-network-function/autodiscover/autodiscover.GitRelease=${GIT_RELEASE}
 LINKER_TNF_RELEASE_FLAGS+= -X github.com/test-network-function/autodiscover/autodiscover.GitPreviousRelease=${GIT_PREVIOUS_RELEASE}
