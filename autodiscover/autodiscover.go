@@ -33,6 +33,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	scalingv1 "k8s.io/api/autoscaling/v1"
 	corev1 "k8s.io/api/core/v1"
+	networkingv1 "k8s.io/api/networking/v1"
 	policyv1 "k8s.io/api/policy/v1"
 	apiextv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	kerrors "k8s.io/apimachinery/pkg/api/errors"
@@ -55,6 +56,7 @@ type DiscoveredTestData struct {
 	DebugPods            []corev1.Pod
 	ResourceQuotaItems   []corev1.ResourceQuota
 	PodDisruptionBudgets []policyv1.PodDisruptionBudget
+	NetworkPolicies      []networkingv1.NetworkPolicy
 	Crds                 []*apiextv1.CustomResourceDefinition
 	Namespaces           []string
 	Csvs                 []olmv1Alpha.ClusterServiceVersion
@@ -103,7 +105,7 @@ func DoAutoDiscover() DiscoveredTestData {
 	var err error
 	data.TestData, err = configuration.LoadConfiguration(data.Env.ConfigurationPath)
 	if err != nil {
-		logrus.Fatalln("Cannot load configuration")
+		logrus.Fatalf("Cannot load configuration, error: %s", err)
 	}
 	oc := clientsholder.GetClientsHolder()
 	data.Namespaces = namespacesListToStringList(data.TestData.TargetNameSpaces)
@@ -115,11 +117,15 @@ func DoAutoDiscover() DiscoveredTestData {
 	data.DebugPods = findPodsByLabel(oc.K8sClient.CoreV1(), debugLabels, debugNS)
 	data.ResourceQuotaItems, err = getResourceQuotas(oc.K8sClient.CoreV1())
 	if err != nil {
-		logrus.Fatalln("Cannot get resource quotas")
+		logrus.Fatalf("Cannot get resource quotas, error: %s", err)
 	}
 	data.PodDisruptionBudgets, err = getPodDisruptionBudgets(oc.K8sClient.PolicyV1(), data.Namespaces)
 	if err != nil {
-		logrus.Fatalln("Cannot get pod disruption budgets")
+		logrus.Fatalf("Cannot get pod disruption budgets, error: %s", err)
+	}
+	data.NetworkPolicies, err = getNetworkPolicies(oc.K8sNetworkingClient)
+	if err != nil {
+		logrus.Fatalln("Cannot get network policies")
 	}
 	data.Crds = FindTestCrdNames(data.TestData.CrdFilters)
 	data.Csvs = findOperatorsByLabel(oc.OlmClient, []configuration.Label{{Name: tnfCsvTargetLabelName, Prefix: tnfLabelPrefix, Value: tnfCsvTargetLabelValue}}, data.TestData.TargetNameSpaces)
@@ -129,7 +135,7 @@ func DoAutoDiscover() DiscoveredTestData {
 	data.OpenshiftVersion = openshiftVersion
 	k8sVersion, err := oc.K8sClient.Discovery().ServerVersion()
 	if err != nil {
-		logrus.Fatalln("Cannot get the K8s version")
+		logrus.Fatalf("Cannot get the K8s version, error: %s", err)
 	}
 	data.Istio = findIstioNamespace(oc.K8sClient.CoreV1())
 
@@ -142,15 +148,15 @@ func DoAutoDiscover() DiscoveredTestData {
 	data.Hpas = findHpaControllers(oc.K8sClient, data.Namespaces)
 	data.Nodes, err = oc.K8sClient.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
-		logrus.Fatalln("Cannot get list of nodes")
+		logrus.Fatalf("Cannot get list of nodes, error: %s", err)
 	}
 	data.PersistentVolumes, err = getPersistentVolumes(oc.K8sClient.CoreV1())
 	if err != nil {
-		logrus.Fatalln("Cannot get list of persistent volumes")
+		logrus.Fatalf("Cannot get list of persistent volumes, error: %s", err)
 	}
 	data.Services, err = getServices(oc.K8sClient.CoreV1(), data.Namespaces)
 	if err != nil {
-		logrus.Fatalln("Cannot get list of services")
+		logrus.Fatalf("Cannot get list of services, error: %s", err)
 	}
 	return data
 }
