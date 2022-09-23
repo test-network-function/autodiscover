@@ -19,23 +19,25 @@ package autodiscover
 import (
 	"context"
 
+	"github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	corev1client "k8s.io/client-go/kubernetes/typed/core/v1"
 )
 
-func getPersistentVolumes(oc corev1client.CoreV1Interface) ([]corev1.PersistentVolume, error) {
-	pvs, err := oc.PersistentVolumes().List(context.TODO(), metav1.ListOptions{})
-	if err != nil {
-		return nil, err
-	}
-	return pvs.Items, nil
+type Event struct {
+	*corev1.Event
 }
 
-func getPersistentVolumeClaims(oc corev1client.CoreV1Interface) ([]corev1.PersistentVolumeClaim, error) {
-	pvcs, err := oc.PersistentVolumeClaims("").List(context.TODO(), metav1.ListOptions{})
-	if err != nil {
-		return nil, err
+func findAbnormalEvents(oc corev1client.CoreV1Interface, namespaces []string) (abnormalEvents []corev1.Event) {
+	abnormalEvents = []corev1.Event{}
+	for _, ns := range namespaces {
+		someAbnormalEvents, err := oc.Events(ns).List(context.TODO(), metav1.ListOptions{FieldSelector: "type!=Normal"})
+		if err != nil {
+			logrus.Errorf("failed to get event list for namespace %s, err:%s", ns, err)
+			continue
+		}
+		abnormalEvents = append(abnormalEvents, someAbnormalEvents.Items...)
 	}
-	return pvcs.Items, nil
+	return abnormalEvents
 }
