@@ -66,6 +66,7 @@ func SetupFakeOlmClient(olmMockObjects []runtime.Object) {
 // Only pure k8s interfaces will be available. The runtime objects must be pure k8s ones.
 // For other (OLM, )
 // runtime mocking objects loading, use the proper clientset mocking function.
+//
 //nolint:funlen
 func GetTestClientsHolder(k8sMockObjects []runtime.Object, filenames ...string) *ClientsHolder {
 	// Build slices of different objects depending on what client
@@ -98,6 +99,8 @@ func GetTestClientsHolder(k8sMockObjects []runtime.Object, filenames ...string) 
 		case *corev1.ResourceQuota:
 			k8sClientObjects = append(k8sClientObjects, v)
 		case *corev1.PersistentVolume:
+			k8sClientObjects = append(k8sClientObjects, v)
+		case *corev1.PersistentVolumeClaim:
 			k8sClientObjects = append(k8sClientObjects, v)
 
 		// K8s Extension Client Objects
@@ -182,6 +185,10 @@ func newClientsHolder(filenames ...string) (*ClientsHolder, error) { //nolint:fu
 	clientsHolder.MachineCfg, err = ocpMachine.NewForConfig(clientsHolder.RestConfig)
 	if err != nil {
 		return nil, fmt.Errorf("cannot instantiate MachineCfg client: %s", err)
+	}
+	clientsHolder.K8sNetworkingClient, err = networkingv1.NewForConfig(clientsHolder.RestConfig)
+	if err != nil {
+		return nil, fmt.Errorf("cannot instantiate k8s networking client: %s", err)
 	}
 	clientsHolder.ready = true
 	return &clientsHolder, nil

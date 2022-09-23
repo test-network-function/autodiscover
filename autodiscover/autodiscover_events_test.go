@@ -1,4 +1,4 @@
-// Copyright (C) 2020-2022 Red Hat, Inc.
+// Copyright (C) 2022 Red Hat, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -13,11 +13,5 @@
 // You should have received a copy of the GNU General Public License along
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-package autodiscover
 
-const (
-	defaultNamespace = "default"
-	debugLabelPrefix = "test-network-function.com"
-	debugLabelName   = "app"
-	debugLabelValue  = "debug"
-)
+package autodiscover
