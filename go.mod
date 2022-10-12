@@ -7,7 +7,7 @@ replace github.com/openshift/machine-config-operator => github.com/openshift/mac
 require (
 	github.com/hashicorp/go-version v1.6.0
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/mittwald/go-helm-client v0.11.4
+	github.com/mittwald/go-helm-client v0.11.5
 	github.com/openshift/api v0.0.0-20220124143425-d74727069f6f
 	github.com/openshift/client-go v0.0.0-20211209144617-7385dd6338e3
 	github.com/openshift/machine-config-operator v0.0.0-00010101000000-000000000000
