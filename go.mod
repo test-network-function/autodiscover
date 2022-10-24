@@ -14,7 +14,7 @@ require (
 	github.com/operator-framework/api v0.17.1
 	github.com/operator-framework/operator-lifecycle-manager v0.21.2
 	github.com/sirupsen/logrus v1.9.0
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 	gopkg.in/yaml.v3 v3.0.1
 	helm.sh/helm/v3 v3.10.1
 	k8s.io/api v0.25.3
