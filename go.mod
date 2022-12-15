@@ -11,7 +11,7 @@ require (
 	github.com/openshift/api v0.0.0-20220124143425-d74727069f6f
 	github.com/openshift/client-go v0.0.0-20211209144617-7385dd6338e3
 	github.com/openshift/machine-config-operator v0.0.0-00010101000000-000000000000
-	github.com/operator-framework/api v0.17.2
+	github.com/operator-framework/api v0.17.3
 	github.com/operator-framework/operator-lifecycle-manager v0.21.2
 	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/testify v1.8.1
